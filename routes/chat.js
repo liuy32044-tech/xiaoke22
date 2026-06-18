@@ -151,7 +151,7 @@ router.post("/stream", async (req, res) => {
         loadStickersForChat(db).catch(() => []), getCachedMemories(db)
       ]);
       const personaMems = xkMemories.filter(m => m.priority === 1);
-      const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 3);
+      const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 10);
       let systemContent = "";
       if (personaMems.length > 0) {
         systemContent += personaMems.map(m => m.content).join("\n\n---\n\n") + "\n\n---\n\n";
@@ -260,7 +260,7 @@ router.post("/stream", async (req, res) => {
         getCachedMemories(db)
       ]);
       const personaMems = xkMemories.filter(m => m.priority === 1);
-      const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 3);
+      const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 10);
 
       // 构建 system prompt
       let systemContent = "";
@@ -464,7 +464,7 @@ router.post("/send", async (req, res) => {
     // DEBUG — 返回调试信息在 reply 前面
     
     const personaMems = xkMemories.filter(m => m.priority === 1);
-    const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 3);
+    const recentMems = xkMemories.filter(m => m.priority === 2).slice(0, 10);
 
     // 构建 system prompt
     let systemContent = "";
