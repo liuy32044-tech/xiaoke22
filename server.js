@@ -63,6 +63,18 @@ app.use("/api/posts", require("./routes/posts"));
 app.use("/api/stickers", require("./routes/stickers"));
 app.use("/api/moments", require("./routes/moments"));
 
+// Refresh memory cache — call after syncing memories to Supabase
+const { getDB, refreshMemoryCache } = require("./db");
+app.post("/api/memories/refresh", async (req, res) => {
+  try {
+    const db = getDB();
+    const mems = await refreshMemoryCache(db);
+    res.json({ ok: true, count: mems.length });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // SPA fallback: all non-API routes serve index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));

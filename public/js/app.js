@@ -1,6 +1,6 @@
 <!---- 小克的陪伴 v2.5 会话层版 ---->
 const API="https://xiaoke22.onrender.com";let currentSession=localStorage.getItem("xiaoke_session")||(Date.now().toString(36)+Math.random().toString(36).slice(2,8));
-const APP_VERSION="20260618b";
+const APP_VERSION="20260618c";
 const AVATAR_34 = `<img src="beauty/avatar.jpg" style="width:34px;height:34px;border-radius:50%;flex-shrink:0;object-fit:cover" onerror="this.style.display='none'">`;
 const AVATAR_44 = `<img src="beauty/avatar.jpg" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;object-fit:cover" onerror="this.style.display='none'">`;
 
