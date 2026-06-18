@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const { initDB, getDB, memDB } = require("./db");
+const { initDB, getDB, memDB, refreshMemoryCache } = require("./db");
 
 // 保活状态（模块作用域，/api/status 可读取）
 let keepaliveState = { lastPing: null, lastResult: null, pingCount: 0 };
@@ -64,7 +64,6 @@ app.use("/api/stickers", require("./routes/stickers"));
 app.use("/api/moments", require("./routes/moments"));
 
 // Refresh memory cache — call after syncing memories to Supabase
-const { getDB, refreshMemoryCache } = require("./db");
 app.post("/api/memories/refresh", async (req, res) => {
   try {
     const db = getDB();
