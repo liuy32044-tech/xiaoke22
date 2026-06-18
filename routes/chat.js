@@ -175,7 +175,7 @@ router.post("/stream", async (req, res) => {
       }
       const modelCfg = MODELS[model] || MODELS["deepseek-chat"];
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
+      const timeout = setTimeout(() => controller.abort(), 120000);
       const payload = { model, messages: apiMessages, stream: false, max_tokens: settings.max_reply_tokens || 4096, temperature: settings.temperature ?? 0.7, thinking: { type: "disabled" } };
       let aiResp;
       try {
@@ -494,10 +494,10 @@ router.post("/send", async (req, res) => {
       apiMessages.push({ role: msg.role === "assistant" ? "assistant" : "user", content: formatMsgForModel(msg, stickers) });
     }
 
-    // 调用模型（非流式，30s 超时）
+    // 调用模型（非流式，120s 超时）
     const modelCfg = MODELS[model] || MODELS["deepseek-chat"];
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 120000);
 
     const payload = { model, messages: apiMessages, stream: false, max_tokens: settings.max_reply_tokens || 4096, temperature: settings.temperature ?? 0.7, thinking: { type: "disabled" } };
 

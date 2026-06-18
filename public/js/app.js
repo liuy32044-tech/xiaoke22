@@ -140,7 +140,7 @@ function sendMessage(){
   msgs.appendChild(aw);msgs.scrollTop=msgs.scrollHeight;
   const b=document.getElementById(placeholderId);if(!b)return;
   const thinkingTimer=setTimeout(()=>{if(b.textContent==="…")b.textContent="还在想…"},4000);
-  const safetyTimer=setTimeout(()=>{if(chatState.chat.streaming){console.warn('[chat] safety');finish('')}},60000);
+  const safetyTimer=setTimeout(()=>{if(chatState.chat.streaming){console.warn('[chat] safety');finish('')}},120000);
 
   // 全量消息传给后端
   fetch(API+"/api/chat/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:sessionId,message:text,messages:localMessages})})
