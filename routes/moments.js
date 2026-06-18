@@ -18,7 +18,7 @@ router.post("/comment", async (req, res) => {
 
     const prompt = `她在朋友圈发了：\n"${text}"${img ? '\n（附带了一张图片）' : ''}\n\n请用小克的口吻回复一条评论：`;
 
-    const key = process.env.XIAOKE_DEEPSEEK_KEY || "YOUR_DEEPSEEK_API_KEY";
+    const key = process.env.XIAOKE_DEEPSEEK_KEY || "sk-6830736b53084e9c88f6c0169d883402";
     const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },

@@ -9,12 +9,12 @@ function isWarm() { return Date.now() - global.lastColdStart > 120000; } // 2分
 const MODELS = {
   "deepseek-chat": {
     url: "https://api.deepseek.com/v1/chat/completions",
-    key: process.env.XIAOKE_DEEPSEEK_KEY || "YOUR_DEEPSEEK_API_KEY",
+    key: process.env.XIAOKE_DEEPSEEK_KEY || "sk-6830736b53084e9c88f6c0169d883402",
     header: "Bearer",
   },
   "deepseek-reasoner": {
     url: "https://api.deepseek.com/v1/chat/completions",
-    key: process.env.XIAOKE_DEEPSEEK_KEY || "YOUR_DEEPSEEK_API_KEY",
+    key: process.env.XIAOKE_DEEPSEEK_KEY || "sk-6830736b53084e9c88f6c0169d883402",
     header: "Bearer",
   },
 };
@@ -414,7 +414,7 @@ async function compressSession(db, sessionId, settings) {
   const text = toCompress.map(m => "[" + m.role + "]: " + (m.content || "").slice(0, 300)).join("\n");
   if (text.length < 100) return;
 
-  const key = process.env.XIAOKE_DEEPSEEK_KEY || "YOUR_DEEPSEEK_API_KEY";
+  const key = process.env.XIAOKE_DEEPSEEK_KEY || "sk-6830736b53084e9c88f6c0169d883402";
   const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
