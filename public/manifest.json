@@ -1,0 +1,16 @@
+{
+  "name": "姐姐和小克",
+  "short_name": "小窝",
+  "description": "姐姐和小克的AI伴侣小窝",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FDF6F8",
+  "theme_color": "#FDF6F8",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/app-icon.jpg", "sizes": "192x192 512x512", "type": "image/jpeg" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

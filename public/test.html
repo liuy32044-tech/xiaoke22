@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>聊天测试页</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:500px;margin:0 auto;padding:16px;background:#FDF6F8}
+h2{color:#c47a8a;text-align:center}
+#log{background:#1a1a2e;color:#a0ffa0;font-family:monospace;font-size:11px;padding:12px;border-radius:10px;max-height:300px;overflow-y:auto;white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+#msgs{min-height:100px;max-height:400px;overflow-y:auto;margin-bottom:12px}
+.msg{margin:8px 0;padding:10px 14px;border-radius:14px;max-width:80%;font-size:14px;line-height:1.6}
+.msg.user{background:#F2C4CE;color:#5c4048;margin-left:auto;text-align:right}
+.msg.assistant{background:#fff;color:#5c4048;border:1px solid rgba(242,196,206,0.5)}
+.toolbar{display:flex;gap:8px}
+input{flex:1;padding:10px 14px;border-radius:20px;border:1px solid rgba(242,196,206,0.5);font-size:14px;outline:none}
+button{padding:10px 20px;border-radius:20px;border:none;background:#F2C4CE;color:#fff;font-size:14px;cursor:pointer}
+button:disabled{background:#ddd}
+</style>
+</head>
+<body>
+
+<h2>小克 · 聊天测试</h2>
+
+<div id="log"></div>
+<div id="msgs"></div>
+
+<div class="toolbar">
+  <input id="inp" placeholder="发一条消息试试…">
+  <button id="btn" onclick="send()">发送</button>
+</div>
+
+<script>
+// ═══ 诊断日志 ═══
+const logEl = document.getElementById("log");
+function log(...args) {
+  const t = new Date().toLocaleTimeString();
+  logEl.textContent += "[" + t + "] " + args.join(" ") + "\n";
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// ═══ DOM ═══
+const inp = document.getElementById("inp");
+const btn = document.getElementById("btn");
+const msgs = document.getElementById("msgs");
+let isStreaming = false;
+
+inp.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+
+function addMsg(role, text) {
+  const d = document.createElement("div");
+  d.className = "msg " + role;
+  d.textContent = text || "…";
+  d.id = role === "assistant" ? "assistant-" + Date.now() : "";
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+async function send() {
+  if (isStreaming) { log("⚠ 正在流式中，跳过"); return; }
+  const text = inp.value.trim(); if (!text) return;
+
+  isStreaming = true; btn.disabled = true;
+  log("▶ 发送:", text.slice(0, 30));
+  addMsg("user", text);
+  const bubble = addMsg("assistant", "…");
+  inp.value = "";
+
+  try {
+    const t0 = performance.now();
+    log("→ fetch /api/chat/stream");
+    const r = await fetch("/api/chat/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: 1, message: text })
+    });
+    log("← 状态:", r.status, "| Content-Type:", r.headers.get("Content-Type"), "| body:", !!r.body);
+
+    const ct = r.headers.get("Content-Type") || "";
+    if (!ct.includes("event-stream")) {
+      // 冷实例 JSON 路径
+      log("→ 冷实例路径 (JSON)");
+      const d = await r.json();
+      log("← JSON:", d.reply ? d.reply.slice(0, 40) : "空", d.error || "");
+      bubble.textContent = d.reply || "唔…" + (d.error || "空回复");
+      isStreaming = false; btn.disabled = false;
+      return;
+    }
+
+    // SSE 流式路径
+    log("→ 热实例路径 (SSE)");
+    if (!r.body) { log("❌ r.body 为 null！"); throw new Error("no body"); }
+
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = "";
+    let chunkCount = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      chunkCount++;
+      if (done) {
+        log("✓ 流结束. 共", chunkCount, "个chunk, fullText长度:", fullText.length);
+        break;
+      }
+      const raw = decoder.decode(value, { stream: true });
+      log("  chunk#" + chunkCount + " bytes=" + value.length + " raw(" + raw.length + "):", raw.slice(0, 100));
+
+      for (const line of raw.split("\n")) {
+        if (!line.startsWith("data: ")) continue;
+        const jsonStr = line.slice(6);
+        try {
+          const dt = JSON.parse(jsonStr);
+          if (dt.type === "start") {
+            log("  → start");
+            bubble.textContent = "";
+          } else if (dt.type === "text") {
+            fullText += dt.text;
+            bubble.textContent = fullText;
+            msgs.scrollTop = msgs.scrollHeight;
+          } else if (dt.type === "done") {
+            log("  → done");
+          } else if (dt.type === "error") {
+            log("  → error:", dt.text);
+            bubble.textContent = "出错: " + dt.text;
+          }
+        } catch (e) {
+          log("  JSON解析失败:", e.message, "| raw:", jsonStr.slice(0, 60));
+        }
+      }
+    }
+  } catch (e) {
+    log("❌ fetch异常:", e.name, e.message);
+    bubble.textContent = "请求失败: " + e.message;
+  } finally {
+    isStreaming = false; btn.disabled = false;
+    log("✓ 解锁");
+  }
+}
+
+log("测试页就绪 — 同域部署，无 Service Worker");
+log("API: " + location.origin + "/api/chat/stream");
+</script>
+</body>
+</html>

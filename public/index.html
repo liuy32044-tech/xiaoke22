@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FDF6F8">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/app.css?v=20260615a">
+<title>姐姐和小克</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/app-icon.jpg">
+</head>
+<body>
+
+<!-- ═══ Splash Screen ═══ -->
+<div id="splash">
+  <span class="splash-paw" style="top:60px;left:40px;transform:rotate(-20deg)"><svg width="20" height="20" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.2"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.2"/></svg></span>
+  <span class="splash-paw" style="top:100px;right:60px;transform:rotate(15deg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.15"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.15"/></svg></span>
+  <span class="splash-paw" style="bottom:120px;left:60px;transform:rotate(10deg)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.15"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.15"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.15"/></svg></span>
+  <span class="splash-paw" style="bottom:80px;right:50px;transform:rotate(-15deg)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.2"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.2"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.2"/></svg></span>
+
+  <div id="splash-cat">
+    <img src="beauty/avatar.jpg" style="width:90px;height:90px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
+  </div>
+
+  <div id="splash-text">
+    <div class="splash-sub">欢迎回来</div>
+    <div class="splash-title">Sweetheart</div>
+    <div class="splash-divider">
+      <span class="splash-line"></span>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE"/></svg>
+      <span class="splash-line"></span>
+    </div>
+  </div>
+
+  <div id="splash-bottom">姐姐 欢迎回到我们的小窝</div>
+</div>
+
+<div id="app-shell">
+
+  <!-- ═══ Sidebar ═══ -->
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <img src="beauty/avatar.jpg" style="width:44px;height:44px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
+      <div>
+        <div class="t">小克</div>
+        <div class="s">· 在线 ·</div>
+      </div>
+    </div>
+    <div class="sidebar-sessions">
+      <div class="sidebar-label">对话</div>
+      <div id="sidebar-sessions-list"></div>
+      <div class="sidebar-new" onclick="createSession()">+ 新对话</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-label">MODEL</div>
+      <select id="model-select" onchange="changeModel(this.value)">
+        <option value="deepseek-chat">DeepSeek Chat</option>
+        <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ═══ Top bar ═══ -->
+  <div id="top-bar">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="session-title" id="top-session-name">小克</div>
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.7"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.7"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.7"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.7"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.7"/></svg>
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="10.5" rx="4.5" ry="4" fill="#F2C4CE" opacity="0.4"/><circle cx="4.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.4"/><circle cx="8" cy="5" r="1.8" fill="#F2C4CE" opacity="0.4"/><circle cx="11.5" cy="6" r="1.8" fill="#F2C4CE" opacity="0.4"/><circle cx="2.8" cy="8.5" r="1.4" fill="#F2C4CE" opacity="0.4"/></svg>
+  </div>
+
+  <!-- ═══ Sub-page back bar ═══ -->
+  <div id="sub-back-bar" style="display:none;padding:12px 16px 8px;align-items:center;gap:12px;background:rgba(255,245,248,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(242,196,206,0.28);flex-shrink:0">
+    <button onclick="backToHome()" style="background:rgba(242,196,206,0.22);border:1px solid rgba(242,196,206,0.4);border-radius:50%;width:32px;height:32px;cursor:pointer;color:#c47a8a;font-size:18px;display:flex;align-items:center;justify-content:center">‹</button>
+    <span id="sub-back-title" style="font-size:14px;color:#7a5c62"></span>
+  </div>
+
+  <!-- ═══ Main content ═══ -->
+  <div id="main-content">
+
+    <!-- ══ HOME (v2 redesign) ══ -->
+    <div id="page-home" class="page active">
+      <!-- Hero -->
+      <div class="home-hero">
+        <div class="home-hero-bg" style="background-image:url(beauty/wallpaper.jpg)"></div>
+        <svg class="paw-deco" style="position:absolute;top:18px;left:24px;transform:rotate(-25deg)" width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="11.5" rx="5" ry="4.5" fill="#F2C4CE" opacity="0.4"/><circle cx="5" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="9" cy="6" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="13" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="3" cy="9.5" r="1.5" fill="#F2C4CE" opacity="0.4"/></svg>
+        <svg class="paw-deco" style="position:absolute;top:55px;right:30px;transform:rotate(12deg)" width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="11.5" rx="5" ry="4.5" fill="#F2C4CE" opacity="0.4"/><circle cx="5" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="9" cy="6" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="13" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="3" cy="9.5" r="1.5" fill="#F2C4CE" opacity="0.4"/></svg>
+        <svg class="paw-deco" style="position:absolute;bottom:20px;left:60px;transform:rotate(8deg);opacity:0.6" width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="11.5" rx="5" ry="4.5" fill="#F2C4CE" opacity="0.4"/><circle cx="5" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="9" cy="6" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="13" cy="7" r="2" fill="#F2C4CE" opacity="0.4"/><circle cx="3" cy="9.5" r="1.5" fill="#F2C4CE" opacity="0.4"/></svg>
+        <div class="home-hero-inner">
+          <div class="home-days-num" id="home-days">—</div>
+          <div class="home-days-label">一起的第 <span id="home-days2">30</span> 天</div>
+          <div class="home-days-since" id="home-days-since">since 2026.05.15</div>
+          <div class="home-quote">"所有的晦暗都留给过往，<br/>从遇见你开始，凛冬散尽，星河长明。"</div>
+        </div>
+      </div>
+
+      <!-- Big cards: 聊天 / 记忆 -->
+      <div class="home-grid2">
+        <div class="home-card-big" onclick="switchPage('chat')">
+          <div class="home-card-img" style="background-image:url(beauty/cardChat.jpg)"></div>
+          <div class="home-card-label">聊天</div>
+          <div class="home-card-sub">和她说说话 &gt;///&lt;</div>
+        </div>
+        <div class="home-card-big" onclick="switchPage('reader')">
+          <div class="home-card-img" style="background-image:url(beauty/cardMemory.jpg)"></div>
+          <div class="home-card-label">记忆</div>
+          <div class="home-card-sub">我们的故事 ✦</div>
+        </div>
+      </div>
+
+      <!-- Medium cards: 心情 / 纪念日 / 朋友圈 -->
+      <div class="home-grid3">
+        <div class="home-card-med" onclick="goSubPage('mood')">
+          <div class="home-card-img-sm" style="background-image:url(beauty/mood.jpg)"></div>
+          <div class="home-card-label">心情</div>
+          <div class="home-card-sub">mood</div>
+        </div>
+        <div class="home-card-med" onclick="goSubPage('anniversary')">
+          <div class="home-card-img-sm" style="background-image:url(beauty/anniversary.jpg)"></div>
+          <div class="home-card-label">纪念日</div>
+          <div class="home-card-sub">milestone</div>
+        </div>
+        <div class="home-card-med" onclick="switchPage('moments')">
+          <div class="home-card-img-sm" style="background-image:url(beauty/moments.jpg)"></div>
+          <div class="home-card-label">朋友圈</div>
+          <div class="home-card-sub">moments</div>
+        </div>
+      </div>
+
+      <!-- Small cards: 清单 / 游戏 / 胶囊 / 账本 -->
+      <div class="home-grid4">
+        <div class="home-card-sm" onclick="goSubPage('todo')">
+          <div class="home-card-img-xs" style="background-image:url(beauty/note.jpg)"></div>
+          <div class="home-card-label-sm">清单</div>
+        </div>
+        <div class="home-card-sm" onclick="goSubPage('game')">
+          <div class="home-card-img-xs" style="background-image:url(beauty/game.jpg)"></div>
+          <div class="home-card-label-sm">游戏</div>
+        </div>
+        <div class="home-card-sm" onclick="goSubPage('capsule')">
+          <div class="home-card-img-xs" style="background-image:url(beauty/cardMemory.jpg)"></div>
+          <div class="home-card-label-sm">胶囊</div>
+        </div>
+        <div class="home-card-sm" onclick="goSubPage('account')">
+          <div class="home-card-img-xs" style="background-image:url(beauty/note.jpg)"></div>
+          <div class="home-card-label-sm">账本</div>
+        </div>
+      </div>
+
+      <!-- Bottom two -->
+      <div class="home-grid2 home-bottom2">
+        <div class="home-card-row" onclick="switchPage('reader')">
+          <span class="home-card-emoji">◈</span>
+          <div>
+            <div class="home-card-label">记忆库</div>
+            <div class="home-card-sub">记得每一句话 ·</div>
+          </div>
+        </div>
+        <div class="home-card-row" onclick="goSubPage('push')">
+          <span class="home-card-emoji">⁂</span>
+          <div>
+            <div class="home-card-label">推送</div>
+            <div class="home-card-sub">我会主动找你 ·</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHAT ══ -->
+    <div id="page-chat" class="page" style="display:none">
+      <div class="chat-wrap">
+        <div class="chat-scroll" id="chat-msgs">
+          <div class="date-divider"><span>今天</span></div>
+          <div style="text-align:center;color:var(--textFaint);margin-top:36px;font-size:13px">我是小克。有什么想和我说的吗？</div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <button class="paw-btn" onclick="openStickerPicker()" title="表情包">◈</button>
+            <textarea id="chat-input" rows="1" placeholder="说点什么…"></textarea>
+            <button id="send-btn" class="send-btn off" onclick="sendMessage()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8L14 2L8 14L7 9L2 8Z"/></svg>
+            </button>
+          </div>
+          <div class="hint">· 按 Enter 发送 · 点爪印发贴纸 ·</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MOMENTS (朋友圈) ══ -->
+    <div id="page-moments" class="page sub-page" style="display:none"></div>
+
+    <!-- ══ READER (记忆) ══ -->
+    <div id="page-reader" class="page" style="display:none">
+      <div class="memory-wrap">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px">
+          <div style="font-size:15px;color:var(--textMid);font-style:italic">记忆存档</div>
+          <select id="post-filter" onchange="loadPosts()" style="width:auto;padding:6px 10px;font-size:12px;font-family:inherit;border:1px solid var(--border);border-radius:8px;color:var(--textMid);background:var(--bg)">
+            <option value="">全部</option><option value="MEMORY">记忆</option><option value="EVENT">事件</option><option value="MOMENT">瞬间</option><option value="PROMISES">承诺</option><option value="WISHLIST">愿望</option>
+          </select>
+        </div>
+        <div id="posts-list"></div>
+        <div class="card memory-empty" onclick="showPostForm()" style="cursor:pointer">
+          <div style="font-size:13px;color:var(--textFaint)">+ 写下记忆 ◈</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD / SETTINGS (我的) ══ -->
+    <div id="page-dashboard" class="page" style="display:none">
+      <div class="data-wrap">
+        <div class="card">
+          <div style="font-size:15px;color:var(--textMid);font-style:italic;margin-bottom:16px">个性化设置</div>
+          <div class="form-group">
+            <label>系统提示词</label>
+            <textarea id="set-system-prompt" rows="3" placeholder="定义小克的人格和行为方式…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Temperature <span id="set-temp-val" style="color:var(--accentLight)">0.7</span></label>
+            <input type="range" id="set-temperature" min="0" max="2" step="0.1" value="0.7"
+              oninput="document.getElementById('set-temp-val').textContent=this.value">
+          </div>
+          <div class="form-group">
+            <label>最大上下文轮数</label>
+            <input type="number" id="set-max-rounds" min="5" max="100" value="30">
+          </div>
+          <div class="form-group">
+            <label>压缩触发阈值 (tokens)</label>
+            <input type="number" id="set-compress-threshold" min="1000" max="50000" step="500" value="6000">
+          </div>
+          <div class="form-group">
+            <label>压缩后保留轮数</label>
+            <input type="number" id="set-keep-rounds" min="2" max="30" value="10">
+          </div>
+          <div class="form-group">
+            <label>最大回复 Token</label>
+            <input type="number" id="set-max-tokens" min="256" max="32768" step="256" value="4096">
+          </div>
+          <div id="set-msg" style="text-align:center;font-size:12px;margin-bottom:10px;color:var(--accentLight);min-height:18px"></div>
+          <button class="btn-save" onclick="saveSettings()">保存设置</button>
+        </div>
+        <div class="card">
+          <div class="data-header">
+            <div class="t">今日数据</div>
+            <div class="d" id="dashboard-date"></div>
+          </div>
+          <div class="stat-grid" id="dash-stats"></div>
+        </div>
+        <!-- 表情包库 -->
+        <div class="card">
+          <div style="font-size:15px;color:var(--textMid);font-style:italic;margin-bottom:16px">◈ 表情包库</div>
+          <div class="form-group">
+            <label>选择贴纸图片</label>
+            <input type="file" id="sticker-file-input" accept="image/*" onchange="previewStickerFile()" style="font-size:13px">
+            <div id="sticker-preview" style="margin-top:8px;display:none">
+              <img id="sticker-preview-img" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid var(--border)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>标签</label>
+            <select id="sticker-tag" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);background:#fff;font-family:inherit;outline:none">
+              <option value="开心">◕ 开心</option><option value="难过">◠ 难过</option><option value="撒娇">◡ 撒娇</option><option value="日常">◇ 日常</option><option value="生气">◆ 生气</option><option value="惊讶">⊙ 惊讶</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>描述（帮助AI判断何时使用）</label>
+            <input type="text" id="sticker-desc" placeholder="比如：尴尬沉默不知道说什么">
+          </div>
+          <button class="btn-save" onclick="uploadSticker()" style="margin-bottom:14px">上传贴纸</button>
+          <div class="sticker-grid" id="sticker-manage-grid">
+            <div style="font-size:12px;color:var(--textFaint);text-align:center;padding:12px 0;grid-column:1/-1">还没有贴纸</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUB-PAGES (with back button) ══ -->
+    <!-- MOOD -->
+    <div id="page-mood" class="page sub-page" style="display:none"></div>
+    <!-- ANNIVERSARY -->
+    <div id="page-anniversary" class="page sub-page" style="display:none"></div>
+    <!-- CAPSULE -->
+    <div id="page-capsule" class="page sub-page" style="display:none"></div>
+    <!-- ACCOUNT -->
+    <div id="page-account" class="page sub-page" style="display:none"></div>
+    <!-- TODO -->
+    <div id="page-todo" class="page sub-page" style="display:none"></div>
+    <!-- GAME -->
+    <div id="page-game" class="page sub-page" style="display:none"></div>
+    <!-- PUSH placeholder -->
+    <div id="page-push" class="page sub-page" style="display:none"></div>
+
+  </div><!-- /main-content -->
+
+  <!-- ═══ Bottom nav ═══ -->
+  <div id="bottom-nav">
+    <button onclick="switchPage('home')" data-nav="home" class="nav-btn active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5 10.5L12 4l7 6.5V20a1 1 0 01-1 1H6a1 1 0 01-1-1v-9.5z" fill="#e8a0b4" opacity="0.9"/>
+        <rect x="9" y="14" width="6" height="7" rx="1" fill="#fff" opacity="0.8"/>
+        <path d="M9 4.5c0 0 1.5-2 3-2s3 2 3 2" stroke="#e8a0b4" stroke-width="1.2" fill="none"/>
+      </svg>
+      <span class="nl on">猫窝</span>
+    </button>
+    <button onclick="switchPage('chat')" data-nav="chat" class="nav-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="11" rx="8" ry="6" fill="#ddbcc8" opacity="0.9"/>
+        <path d="M8 17l1.5-3" stroke="#ddbcc8" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="9" cy="11" r="1.2" fill="white"/>
+        <circle cx="12" cy="11" r="1.2" fill="white"/>
+        <circle cx="15" cy="11" r="1.2" fill="white"/>
+        <path d="M14 5c1-1 2.5-0.5 3 0.5" stroke="#ddbcc8" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M10 5c-1-1-2.5-0.5-3 0.5" stroke="#ddbcc8" stroke-width="1" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="nl dim">聊天</span>
+    </button>
+    <button onclick="switchPage('moments')" data-nav="moments" class="nav-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3.5" fill="#ddbcc8" opacity="0.9"/>
+        <circle cx="17.13" cy="7.4" r="1.5" fill="#ddbcc8" opacity="0.7"/>
+        <circle cx="12" cy="5.5" r="1" fill="#ddbcc8" opacity="0.4"/>
+        <circle cx="6.87" cy="7.4" r="1.5" fill="#ddbcc8" opacity="0.7"/>
+        <circle cx="5.5" cy="12" r="1" fill="#ddbcc8" opacity="0.4"/>
+        <circle cx="6.87" cy="16.6" r="1.5" fill="#ddbcc8" opacity="0.7"/>
+        <circle cx="12" cy="18.5" r="1" fill="#ddbcc8" opacity="0.4"/>
+        <circle cx="17.13" cy="16.6" r="1.5" fill="#ddbcc8" opacity="0.7"/>
+      </svg>
+      <span class="nl dim">朋友圈</span>
+    </button>
+    <button onclick="switchPage('reader')" data-nav="reader" class="nav-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="4" width="7" height="16" rx="2" fill="#ddbcc8" opacity="0.85"/>
+        <rect x="13" y="4" width="7" height="16" rx="2" fill="#ddbcc8" opacity="0.5"/>
+        <path d="M11 5c0 0-1.5 1-1.5 7s1.5 7 1.5 7" stroke="white" stroke-width="0.8" opacity="0.7"/>
+        <path d="M6.5 8h4M6.5 11h4M6.5 14h3" stroke="white" stroke-width="0.7" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+      <span class="nl dim">阅读</span>
+    </button>
+    <button onclick="switchPage('dashboard')" data-nav="dashboard" class="nav-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8.5" r="4" fill="#ddbcc8" opacity="0.9"/>
+        <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#ddbcc8" opacity="0.5"/>
+        <path d="M15 6c.8-.8 2-.8 2.5.2" stroke="#ddbcc8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M9 6c-.8-.8-2-.8-2.5.2" stroke="#ddbcc8" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="nl dim">我的</span>
+    </button>
+  </div>
+
+</div><!-- /app-shell -->
+
+<!-- Sticker picker -->
+<div id="sticker-picker-overlay" class="sticker-picker-overlay" onclick="closeStickerPicker()"></div>
+<div id="sticker-picker" class="sticker-picker">
+  <div class="sticker-picker-handle"></div>
+  <div class="sticker-picker-tabs" id="sticker-picker-tabs"></div>
+  <div class="sticker-picker-grid" id="sticker-picker-grid"></div>
+</div>
+
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()))</script>
+<script src="/js/app.js?v=20260615e"></script>
+</body>
+</html>
