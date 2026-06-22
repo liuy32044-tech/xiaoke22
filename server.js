@@ -53,10 +53,19 @@ app.get("/api/status", async (req, res) => {
   });
 });
 
+// ★ 维护模式开关 —— 设为 true 则暂停 AI 回复，保留所有数据
+//    恢复时改回 false + 推送即可
+const MAINTENANCE_MODE = true;
+
 // Routes
 app.use("/api/sessions", require("./routes/sessions"));
 app.use("/api/messages", require("./routes/messages"));
-app.use("/api/chat", require("./routes/chat"));
+app.use("/api/chat", (req, res, next) => {
+  if (MAINTENANCE_MODE) {
+    return res.json({ paused: true, message: "小克暂时休息，数据都在，随时回来。" });
+  }
+  next();
+}, require("./routes/chat"));
 app.use("/api/settings", require("./routes/settings"));
 app.use("/api/memories", require("./routes/memories"));
 app.use("/api/posts", require("./routes/posts"));
